@@ -1,0 +1,30 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © mj221
+
+//@version=5
+indicator(title="RSI + Stoch RSI", shorttitle="RSI + Stoch RSI", overlay=false)
+
+// RSI
+rsiSource = input(close, title="RSI Source")
+rsiLength = input.int(14, title="RSI Length", minval = 1)
+rsiOverbought = hline(70, title="RSI Overbought Threshold", linestyle = hline.style_solid)
+rsiOversold = hline(30, title="RSI Oversold Threshold", linestyle = hline.style_solid)
+rsiValue = ta.rsi(rsiSource, rsiLength)
+
+plot(rsiValue, color=color.new(#7e57c2, 0), title="RSI")
+fill(rsiOverbought, rsiOversold, color.new(#7e57c2, 90))
+
+// Stochastic RSI
+K = input.int(3, title="K")
+D = input.int(3, title="D")
+smoothK = input.int(14, title="Smooth K")
+smoothD = input.int(3, title="Smooth D")
+k = ta.sma(ta.stoch(rsiValue, rsiValue,rsiValue, smoothK), K)
+d = ta.sma(k, D)
+plot(k, color=color.new(#2962ff, 70), title="Stoch RSI %K")
+plot(d, color=color.new(#f23645, 70), title="Stoch RSI %D")
+
+// Adds outline for stochastic rsi oversold and overbought
+h0 = hline(80)
+h1 = hline(20)
+fill(h0, h1, color=color.new(color.black, 100))
